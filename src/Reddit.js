@@ -31,6 +31,12 @@ function Reddit() {
         getData();
     };
 
+    const getDate = (unixTimestamp) => {
+        var t = new Date(unixTimestamp);
+        var formatted = t.format("mm/mm/yyyy hh:MM:ss");
+        return formatted;
+    }
+
     const listUsers = data.map((comment) => (
         <Media key={comment.id}>
             {/* <a href={comment.permalink}>
@@ -43,8 +49,11 @@ function Reddit() {
           />
         </a> */}
             <Media.Body>
-                <h5>{comment.author}</h5>
-                <p>{comment.body}</p>
+                <h5><a href={`https://www.reddit.com/u/${comment.author}`}>{comment.author}</a></h5>
+                {comment.body}
+                <br />
+                <a href={`https://www.reddit.com${comment.permalink}`}>Link</a>
+                <p />
             </Media.Body>
         </Media>
     ));
@@ -64,7 +73,7 @@ function Reddit() {
                 </InputGroup>
                 <Button variant="primary">Search</Button>
             </Form>
-            <h3>Reddit Users Results</h3>
+            <br />
             {isLoading && <ReactLoading type="spinningBubbles" color="#444" />}
             {listUsers}
             {error && <div className="text-red-font-bold">{error.message}</div>}
