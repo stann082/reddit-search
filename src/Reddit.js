@@ -1,27 +1,57 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import ReactLoading from "react-loading";
-import { Media } from "react-bootstrap";
-import { Button, Form, FormControl, InputGroup } from "react-bootstrap";
+import { FormGroup, Media } from "react-bootstrap";
+import { Button, Form } from "react-bootstrap";
+import Input from "./Input";
+
+const QUERY = "Query";
+const SUBREDDIT = "Subreddit";
+const USERNAME = "Username";
 
 function Reddit() {
 
     const [data, setData] = useState([]);
-    const [searchTerm, setSearchTerm] = useState("");
-    const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [subreddit, setSubreddit] = useState("");
+    const [username, setUsername] = useState("");
 
-    useEffect(() => {
-        getData();
-    }, []);
+    const buildApi = () => {
+        var api = "https://api.pushshift.io/reddit/search/";
+        api += `comment`;
+        api += `?q=${searchTerm}`;
+        api += `&author=${username}`;
+        api += `&subreddit=${subreddit}`;
+        api += `&size=10`;
+        return api;
+    }
 
     const getData = async () => {
+        var api = buildApi();
         await axios
-            .get(`https://api.pushshift.io/reddit/search/comment?q=${searchTerm}&subreddit=AskReddit&size=10`)
-            .then((res) => {
+            .get(api).then((res) => {
                 setData(res.data.data);
                 setIsLoading(false);
             });
+    };
+
+    const handleChange = (event) => {
+        switch (event.target.id) {
+            case QUERY:
+                setSearchTerm(event.target.value);
+                break;
+            case SUBREDDIT:
+                setSubreddit(event.target.value);
+                break;
+            case USERNAME:
+                setUsername(event.target.value);
+                break;
+            default:
+                setSearchTerm(event.target.value);
+                break;
+        }
     };
 
     const handleSubmit = (event) => {
@@ -39,15 +69,6 @@ function Reddit() {
 
     const listUsers = data.map((comment) => (
         <Media key={comment.id}>
-            {/* <a href={comment.permalink}>
-          <img
-            width={64}
-            height={64}
-            className="mr-3"
-            src={comment.avatar_url}
-            alt="Generic placeholder"
-          />
-        </a> */}
             <Media.Body>
                 <h5><a href={`https://www.reddit.com/u/${comment.author}`}>{comment.author}</a></h5>
                 {comment.body}
@@ -59,22 +80,17 @@ function Reddit() {
     ));
 
     return (
-        <div>
-            <Form onSubmit={handleSubmit}>
-                <InputGroup className="mb-3">
-                    <InputGroup.Prepend>
-                        <InputGroup.Text id="inputGroup-sizing-default">Query</InputGroup.Text>
-                    </InputGroup.Prepend>
-                    <FormControl
-                        aria-label="Query"
-                        aria-describedby="inputGroup-sizing-default"
-                        onChange={(event) => setSearchTerm(event.target.value)}
-                    />
-                </InputGroup>
-                <Button variant="primary">Search</Button>
+        <div className="search-container">
+            <Form onSubmit={handleSubmit} onChange={handleChange}>
+                <Input name={USERNAME} />
+                <Input name={SUBREDDIT} />
+                <Input name={QUERY} />
+                <Button variant="primary" type="submit">Search</Button>
             </Form>
             <br />
-            {isLoading && <ReactLoading type="spinningBubbles" color="#444" />}
+            <div>
+                {isLoading && <ReactLoading type="spinningBubbles" color="#444" />}
+            </div>
             {listUsers}
             {error && <div className="text-red-font-bold">{error.message}</div>}
         </div>
