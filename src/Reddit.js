@@ -63,7 +63,7 @@ function Reddit() {
 
     const getDate = (unixTimestamp) => {
         var t = new Date(unixTimestamp);
-        var formatted = t.format("mm/mm/yyyy hh:MM:ss");
+        var formatted = t.toISOString()
         return formatted;
     }
 
@@ -72,6 +72,8 @@ function Reddit() {
             <Media.Body>
                 <h5><a href={`https://www.reddit.com/u/${comment.author}`}>{comment.author}</a></h5>
                 {comment.body}
+                <br />
+                {getDate(comment.created_utc)}
                 <br />
                 <a href={`https://www.reddit.com${comment.permalink}`}>Link</a>
                 <p />
