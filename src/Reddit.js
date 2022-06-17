@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import axios from "axios";
 import ReactLoading from "react-loading";
-import { FormGroup, Media } from "react-bootstrap";
+import Card from "react-bootstrap/Card";
 import { Button, Form } from "react-bootstrap";
 import Input from "./Input";
 
 const QUERY = "Query";
 const SUBREDDIT = "Subreddit";
+const TOTAL_RESULTS = "Total results";
 const USERNAME = "Username";
 
 function Reddit() {
@@ -16,6 +17,7 @@ function Reddit() {
     const [isLoading, setIsLoading] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
     const [subreddit, setSubreddit] = useState("");
+    const [totalResults, setTotalResults] = useState(100);
     const [username, setUsername] = useState("");
 
     const buildApi = () => {
@@ -24,7 +26,7 @@ function Reddit() {
         api += `?q=${searchTerm}`;
         api += `&author=${username}`;
         api += `&subreddit=${subreddit}`;
-        api += `&size=10`;
+        api += `&size=${totalResults}`;
         return api;
     }
 
@@ -37,6 +39,10 @@ function Reddit() {
             });
     };
 
+    const transformData = async () => {
+        var comments = data;
+    };
+
     const handleChange = (event) => {
         switch (event.target.id) {
             case QUERY:
@@ -44,6 +50,9 @@ function Reddit() {
                 break;
             case SUBREDDIT:
                 setSubreddit(event.target.value);
+                break;
+            case TOTAL_RESULTS:
+                setTotalResults(event.target.value);
                 break;
             case USERNAME:
                 setUsername(event.target.value);
@@ -59,6 +68,7 @@ function Reddit() {
         setData([]);
         setIsLoading(true);
         getData();
+        transformData();
     };
 
     const getDate = (unixTimestamp) => {
@@ -67,16 +77,17 @@ function Reddit() {
         return formatted;
     }
 
-    const listUsers = data.map((comment) => (
-        <Media key={comment.id}>
-            <Media.Body>
-                <h5><a href={`https://www.reddit.com/u/${comment.author}`}>{comment.author}</a></h5>
+    const listComments = data.map((comment) => (
+        <Card key={comment.id}>
+            <Card.Body>
+                <Card.Title><a href={`https://www.reddit.com/u/${comment.author}`}>{comment.author}</a></Card.Title>
+                <Card.Text>
                 {comment.body}
-                <br />
-                <a href={`https://www.reddit.com${comment.permalink}`}>Link</a>
-                <p />
-            </Media.Body>
-        </Media>
+                </Card.Text>
+                <Card.Link href={`https://www.reddit.com${comment.permalink}`}>Comment</Card.Link>
+                <Card.Link href={`https://www.reddit.com/r/${comment.subreddit}`}>r/{comment.subreddit}</Card.Link>
+            </Card.Body>
+        </Card>
     ));
 
     return (
@@ -85,13 +96,14 @@ function Reddit() {
                 <Input name={USERNAME} />
                 <Input name={SUBREDDIT} />
                 <Input name={QUERY} />
+                <Input name={TOTAL_RESULTS} />
                 <Button variant="primary" type="submit">Search</Button>
             </Form>
             <br />
             <div>
                 {isLoading && <ReactLoading type="spinningBubbles" color="#444" />}
             </div>
-            {listUsers}
+            {listComments}
             {error && <div className="text-red-font-bold">{error.message}</div>}
         </div>
     );
