@@ -73,7 +73,7 @@ function Reddit() {
 
     const getDate = (unixTimestamp) => {
         var t = new Date(unixTimestamp);
-        var formatted = t.format("mm/mm/yyyy hh:MM:ss");
+        var formatted = t.toISOString()
         return formatted;
     }
 
