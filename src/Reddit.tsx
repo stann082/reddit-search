@@ -46,26 +46,23 @@ const Reddit: React.FC = () => {
             });
     };
 
-    const transformData = async () => {
-        var comments = data;
-    };
-
-    const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-        switch (event.target.id) {
+    const handleChange = (event: FormEvent<HTMLFormElement>) => {
+        var eventTarget = (event.target as HTMLInputElement);
+        switch (eventTarget.id) {
             case QUERY:
-                setSearchTerm(event.target.value);
+                setSearchTerm(eventTarget.value);
                 break;
             case SUBREDDIT:
-                setSubreddit(event.target.value);
+                setSubreddit(eventTarget.value);
                 break;
             case TOTAL_RESULTS:
-                setTotalResults(event.target.value);
+                setTotalResults(eventTarget.value);
                 break;
             case USERNAME:
-                setUsername(event.target.value);
+                setUsername(eventTarget.value);
                 break;
             default:
-                setSearchTerm(event.target.value);
+                setSearchTerm(eventTarget.value);
                 break;
         }
     };
@@ -75,7 +72,6 @@ const Reddit: React.FC = () => {
         setData([]);
         setIsLoading(true);
         getData();
-        transformData();
     };
 
     const listComments = data.map((comment: Comment) => (
@@ -93,7 +89,7 @@ const Reddit: React.FC = () => {
 
     return (
         <div className="search-container">
-            <Form onSubmit={handleSubmit} onChange={() => handleChange}>
+            <Form onSubmit={handleSubmit} onChange={handleChange}>
                 <Input title={USERNAME} />
                 <Input title={SUBREDDIT} />
                 <Input title={QUERY} />
