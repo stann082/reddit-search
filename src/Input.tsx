@@ -1,21 +1,21 @@
-import { React } from "react";
+import * as React from "react";
 import { FormControl, InputGroup } from "react-bootstrap";
 
-function Input(props) {
+const Input: React.FC<{title: string}> = ({title}) => {
     return (
-        <div id={props.name}>
+        <div id={title}>
             <InputGroup className="mb-3">
                 <InputGroup.Prepend>
-                    <InputGroup.Text id="inputGroup-sizing-default">{props.name}</InputGroup.Text>
+                    <InputGroup.Text id="inputGroup-sizing-default">{title}</InputGroup.Text>
                 </InputGroup.Prepend>
                 <FormControl
-                    aria-label={props.name}
+                    aria-label={title}
                     aria-describedby="inputGroup-sizing-default"
-                    id={props.name}
+                    id={title}
                 />
             </InputGroup>
         </div>
     )
-}
+};
 
 export default Input;

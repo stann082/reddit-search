@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-import axios from "axios";
+import React, { ChangeEvent, FormEvent, useState } from "react";
+import axios, { AxiosError } from "axios";
+import { Comment } from './comment'
 import ReactLoading from "react-loading";
 import Card from "react-bootstrap/Card";
 import { Button, Form } from "react-bootstrap";
@@ -11,14 +12,14 @@ const SUBREDDIT = "Subreddit";
 const TOTAL_RESULTS = "Total results";
 const USERNAME = "Username";
 
-function Reddit() {
+const Reddit: React.FC = () => {
 
     const [data, setData] = useState([]);
-    const [error, setError] = useState(null);
+    const [error, setError] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
     const [subreddit, setSubreddit] = useState("");
-    const [totalResults, setTotalResults] = useState(100);
+    const [totalResults, setTotalResults] = useState('100');
     const [username, setUsername] = useState("");
 
     const buildApi = () => {
@@ -39,51 +40,41 @@ function Reddit() {
                 setData(res.data.data);
                 setIsLoading(false);
             })
-            .catch((err) => {
-                setError(err)
+            .catch((err: AxiosError) => {
+                setError(err.message)
                 setIsLoading(false);
             });
     };
 
-    const transformData = async () => {
-        var comments = data;
-    };
-
-    const handleChange = (event) => {
-        switch (event.target.id) {
+    const handleChange = (event: FormEvent<HTMLFormElement>) => {
+        var eventTarget = (event.target as HTMLInputElement);
+        switch (eventTarget.id) {
             case QUERY:
-                setSearchTerm(event.target.value);
+                setSearchTerm(eventTarget.value);
                 break;
             case SUBREDDIT:
-                setSubreddit(event.target.value);
+                setSubreddit(eventTarget.value);
                 break;
             case TOTAL_RESULTS:
-                setTotalResults(event.target.value);
+                setTotalResults(eventTarget.value);
                 break;
             case USERNAME:
-                setUsername(event.target.value);
+                setUsername(eventTarget.value);
                 break;
             default:
-                setSearchTerm(event.target.value);
+                setSearchTerm(eventTarget.value);
                 break;
         }
     };
 
-    const handleSubmit = (event) => {
+    const handleSubmit = (event: FormEvent) => {
         event.preventDefault();
         setData([]);
         setIsLoading(true);
         getData();
-        transformData();
     };
 
-    const getDate = (unixTimestamp) => {
-        var t = new Date(unixTimestamp);
-        var formatted = t.toISOString()
-        return formatted;
-    }
-
-    const listComments = data.map((comment) => (
+    const listComments = data.map((comment: Comment) => (
         <Card key={comment.id}>
             <Card.Body>
                 <Card.Title><a href={`${BASE_URL}/u/${comment.author}`}>{comment.author}</a></Card.Title>
@@ -99,10 +90,10 @@ function Reddit() {
     return (
         <div className="search-container">
             <Form onSubmit={handleSubmit} onChange={handleChange}>
-                <Input name={USERNAME} />
-                <Input name={SUBREDDIT} />
-                <Input name={QUERY} />
-                <Input name={TOTAL_RESULTS} />
+                <Input title={USERNAME} />
+                <Input title={SUBREDDIT} />
+                <Input title={QUERY} />
+                <Input title={TOTAL_RESULTS} />
                 <Button variant="primary" type="submit">Search</Button>
             </Form>
             <br />
@@ -110,9 +101,9 @@ function Reddit() {
                 {isLoading && <ReactLoading type="spinningBubbles" color="#444" />}
             </div>
             {listComments}
-            {error && <div className="text-red-font-bold">{error.message}</div>}
+            {error && <div className="text-red-font-bold">{error}</div>}
         </div>
     );
-}
+};
 
 export default Reddit;
