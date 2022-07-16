@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { ChangeEvent, FormEvent, useState } from "react";
 import axios from "axios";
 import ReactLoading from "react-loading";
 import Card from "react-bootstrap/Card";
@@ -49,7 +49,7 @@ function Reddit() {
         var comments = data;
     };
 
-    const handleChange = (event) => {
+    const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
         switch (event.target.id) {
             case QUERY:
                 setSearchTerm(event.target.value);
@@ -69,19 +69,13 @@ function Reddit() {
         }
     };
 
-    const handleSubmit = (event) => {
+    const handleSubmit = (event: FormEvent) => {
         event.preventDefault();
         setData([]);
         setIsLoading(true);
         getData();
         transformData();
     };
-
-    const getDate = (unixTimestamp) => {
-        var t = new Date(unixTimestamp);
-        var formatted = t.toISOString()
-        return formatted;
-    }
 
     const listComments = data.map((comment) => (
         <Card key={comment.id}>
