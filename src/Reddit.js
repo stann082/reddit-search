@@ -5,6 +5,7 @@ import Card from "react-bootstrap/Card";
 import { Button, Form } from "react-bootstrap";
 import Input from "./Input";
 
+const BASE_URL = "https://www.reddit.com"
 const QUERY = "Query";
 const SUBREDDIT = "Subreddit";
 const TOTAL_RESULTS = "Total results";
@@ -33,8 +34,13 @@ function Reddit() {
     const getData = async () => {
         var api = buildApi();
         await axios
-            .get(api).then((res) => {
+            .get(api)
+            .then((res) => {
                 setData(res.data.data);
+                setIsLoading(false);
+            })
+            .catch((err) => {
+                setError(err)
                 setIsLoading(false);
             });
     };
@@ -80,12 +86,12 @@ function Reddit() {
     const listComments = data.map((comment) => (
         <Card key={comment.id}>
             <Card.Body>
-                <Card.Title><a href={`https://www.reddit.com/u/${comment.author}`}>{comment.author}</a></Card.Title>
+                <Card.Title><a href={`${BASE_URL}/u/${comment.author}`}>{comment.author}</a></Card.Title>
                 <Card.Text>
                 {comment.body}
                 </Card.Text>
-                <Card.Link href={`https://www.reddit.com${comment.permalink}`}>Comment</Card.Link>
-                <Card.Link href={`https://www.reddit.com/r/${comment.subreddit}`}>r/{comment.subreddit}</Card.Link>
+                <Card.Link href={`${BASE_URL}${comment.permalink}`}>Comment</Card.Link>
+                <Card.Link href={`${BASE_URL}/r/${comment.subreddit}`}>r/{comment.subreddit}</Card.Link>
             </Card.Body>
         </Card>
     ));
