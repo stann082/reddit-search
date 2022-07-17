@@ -1,4 +1,4 @@
-import React, { ChangeEvent, FormEvent, useState } from "react";
+import React, { FormEvent, useState } from "react";
 import axios, { AxiosError } from "axios";
 import { Comment } from './comment'
 import ReactLoading from "react-loading";
