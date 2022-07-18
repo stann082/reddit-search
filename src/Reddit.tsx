@@ -38,10 +38,11 @@ const Reddit: React.FC = () => {
             .get(api)
             .then((res) => {
                 setData(res.data.data);
-                setIsLoading(false);
             })
             .catch((err: AxiosError) => {
                 setError(err.message)
+            })
+            .then(() => {
                 setIsLoading(false);
             });
     };
