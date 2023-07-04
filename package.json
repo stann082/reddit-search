@@ -1,4 +1,5 @@
 {
+  "homepage": "https://stann082.github.io/reddit-search",
   "name": "reddit-search",
   "version": "0.1.0",
   "private": true,
@@ -12,6 +13,7 @@
     "@types/react-dom": "^18.0.6",
     "axios": "^0.21.1",
     "bootstrap": "^4.5.3",
+    "gh-pages": "^5.0.0",
     "react": "^18.2.0",
     "react-bootstrap": "^1.4.3",
     "react-dom": "^18.2.0",
@@ -24,6 +26,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "deploy": "gh-pages -b master -d build",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
